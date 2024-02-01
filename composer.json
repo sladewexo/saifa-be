@@ -1,0 +1,24 @@
+{
+    "name": "saifa",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "authors": [
+        {
+            "name": "patra nakamo",
+            "email": "patranakamo@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.5",
+        "marcelog/pami": "^2.0",
+        "symfony/uid": "^5.4",
+        "guzzlehttp/guzzle": "^7.8"
+    },
+     "autoload": {
+            "psr-4": {
+                "Api\\": "src/Api/",
+                "Includes\\": "sec/Includes/",
+                "Services\\": "sec/Services/"
+            }
+        }
+}
