@@ -7,6 +7,7 @@ use Api\Auth\Auth;
 use Api\Auth\Login;
 use Api\Auth\Logout;
 use Api\V1\Config\WebhookConfig;
+use Api\V1\Config\RetryConfig;
 
 $requestUri = $_SERVER['REQUEST_URI'];
 $method = $_SERVER['REQUEST_METHOD'];
@@ -39,6 +40,11 @@ $routes = [
     ],
     '/v1/config/webhook/save' => [
         'handler' => [new WebhookConfig(), 'save'],
+        'auth_required' => true,
+        'method' => 'post'
+    ],
+    '/v1/config/retry/save' => [
+        'handler' => [new RetryConfig(), 'save'],
         'auth_required' => true,
         'method' => 'post'
     ],
