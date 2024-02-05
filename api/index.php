@@ -6,6 +6,7 @@ session_start();
 use Api\Auth\Auth;
 use Api\Auth\Login;
 use Api\Auth\Logout;
+use Api\V1\Config\WebhookConfig;
 
 $requestUri = $_SERVER['REQUEST_URI'];
 $method = $_SERVER['REQUEST_METHOD'];
@@ -30,6 +31,16 @@ $routes = [
         'handler' => [new Auth(), 'reLoadAuth'],
         'auth_required' => false,
         'method' => 'get'
+    ],
+    '/v1/config/webhook' => [
+        'handler' => [new WebhookConfig(), 'get'],
+        'auth_required' => true,
+        'method' => 'get'
+    ],
+    '/v1/config/webhook/save' => [
+        'handler' => [new WebhookConfig(), 'save'],
+        'auth_required' => true,
+        'method' => 'post'
     ],
 ];
 
@@ -61,7 +72,6 @@ foreach ($routes as $route => $info) {
         }
     }
 }
-
 
 // Function to process the request
 function processRequest($info, $dynamicParam = null)
