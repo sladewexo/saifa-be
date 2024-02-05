@@ -5,7 +5,7 @@ namespace Api\V1\Config;
 use API\V1\BaseAPI;
 use Includes\Database\Config;
 
-class webhookConfig extends BaseAPI
+class WebhookConfig extends BaseAPI
 {
     public function save($data)
     {
