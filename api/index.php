@@ -9,6 +9,7 @@ use Api\Auth\Logout;
 use Api\V1\Config\WebhookConfig;
 use Api\V1\Config\RetryConfig;
 use Api\V1\Config\AccessToken;
+use Api\V1\Users\UserHandler;
 
 $requestUri = $_SERVER['REQUEST_URI'];
 $method = $_SERVER['REQUEST_METHOD'];
@@ -76,6 +77,31 @@ $routes = [
     ],
     '/v1/config/token/${tokenId}' => [
         'handler' => [new AccessToken(), 'getOne'],
+        'auth_required' => true,
+        'method' => 'get'
+    ],
+    '/v1/users' => [
+        'handler' => [new UserHandler(), 'getAll'],
+        'auth_required' => true,
+        'method' => 'get'
+    ],
+    '/v1/user/new' => [
+        'handler' => [new UserHandler(), 'new'],
+        'auth_required' => true,
+        'method' => 'post'
+    ],
+    '/v1/user/update' => [
+        'handler' => [new UserHandler(), 'update'],
+        'auth_required' => true,
+        'method' => 'post'
+    ],
+    '/v1/user/remove' => [
+        'handler' => [new UserHandler(), 'remove'],
+        'auth_required' => true,
+        'method' => 'post'
+    ],
+    '/v1/user/${userId}' => [
+        'handler' => [new UserHandler(), 'getOne'],
         'auth_required' => true,
         'method' => 'get'
     ],
