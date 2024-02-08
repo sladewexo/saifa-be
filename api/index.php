@@ -9,7 +9,7 @@ use Api\Auth\Logout;
 use Api\V1\Config\WebhookConfig;
 use Api\V1\Config\RetryConfig;
 use Api\V1\Config\AccessToken;
-use Api\V1\Users\UserHandler;
+use Api\V1\Users\UserHandler as User;
 
 $requestUri = $_SERVER['REQUEST_URI'];
 $method = $_SERVER['REQUEST_METHOD'];
@@ -81,27 +81,27 @@ $routes = [
         'method' => 'get'
     ],
     '/v1/users' => [
-        'handler' => [new UserHandler(), 'getAll'],
+        'handler' => [new User(), 'getAll'],
         'auth_required' => true,
         'method' => 'get'
     ],
     '/v1/user/new' => [
-        'handler' => [new UserHandler(), 'new'],
+        'handler' => [new User(), 'new'],
         'auth_required' => true,
         'method' => 'post'
     ],
     '/v1/user/update' => [
-        'handler' => [new UserHandler(), 'update'],
+        'handler' => [new User(), 'update'],
         'auth_required' => true,
         'method' => 'post'
     ],
     '/v1/user/remove' => [
-        'handler' => [new UserHandler(), 'remove'],
+        'handler' => [new User(), 'remove'],
         'auth_required' => true,
         'method' => 'post'
     ],
     '/v1/user/${userId}' => [
-        'handler' => [new UserHandler(), 'getOne'],
+        'handler' => [new User(), 'getOne'],
         'auth_required' => true,
         'method' => 'get'
     ],
@@ -169,5 +169,5 @@ function processRequest($info, $dynamicParam = null)
 }
 
 header('HTTP/1.1 404 Not Found');
-echo json_encode(['error' => 'Endpoint not found']);
+echo json_encode(['error' => 'Endpoint not found.']);
 

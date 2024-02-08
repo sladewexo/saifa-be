@@ -58,7 +58,7 @@ class Users extends BaseModel
         $saveData['hash_password'] = hash('sha256', $requestData['password']);
         $saveData['last_login_time'] = -1;
         $saveData['is_delete'] = false;
-        $saveData['is_admin'] = false;
+        $saveData['is_admin'] = $requestData['is_admin'] ?? false;
         //todo make verified process url send to email
         $saveData['is_verified'] = 'no';
 
