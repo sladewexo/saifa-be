@@ -46,9 +46,17 @@ class Users extends BaseModel
     /**
      * @param array $requestData
      * @return array
+     * @throws \Exception
      */
     public function insertUser(array $requestData): array
     {
+        if (empty($requestData['username'])) {
+            throw new \Exception('add new user with empty username');
+        }
+        if (!empty($this->getUserByUserName($requestData['username']))) {
+            throw new \Exception('this username already exists');
+        }
+
         $newUUID = $this->makeNewUUID();
         $saveData['user_id'] = $newUUID;
         $saveData['username'] = $requestData['username'];
