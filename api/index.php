@@ -10,6 +10,7 @@ use Api\V1\Config\WebhookConfig;
 use Api\V1\Config\RetryConfig;
 use Api\V1\Config\AccessToken;
 use Api\V1\Users\UserHandler as User;
+use Api\V1\Config\ShopConfig;
 
 $requestUri = $_SERVER['REQUEST_URI'];
 $method = $_SERVER['REQUEST_METHOD'];
@@ -104,6 +105,16 @@ $routes = [
         'handler' => [new User(), 'getOne'],
         'auth_required' => true,
         'method' => 'get'
+    ],
+    '/v1/config/shops' => [
+        'handler' => [new ShopConfig(), 'get'],
+        'auth_required' => true,
+        'method' => 'get'
+    ],
+    '/v1/config/shop/save' => [
+        'handler' => [new ShopConfig(), 'save'],
+        'auth_required' => true,
+        'method' => 'post'
     ],
 ];
 

@@ -21,7 +21,7 @@ class Config extends BaseModel
 
     public function getConfigAll(): array
     {
-        return $config = $this->select(self::APP_CONFIG_TABLE, "");
+        return $this->select(self::APP_CONFIG_TABLE, "");
     }
 
     /**
