@@ -2,3 +2,4 @@
 /vendor/
 .idea
 /migration/migration.csv
+/lnd/data

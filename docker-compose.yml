@@ -8,9 +8,13 @@ services:
       - "9988:80"
     volumes:
       - .:/var/www/html
+      - ./lnd/data:/var/www/html/lnd/data:ro
     depends_on:
       - redis
     environment:
+      APP_PASSWORD: $APP_PASSWORD
+      LN_SERVER_URL: "https://$LND_IP:$LND_REST_PORT"
+      MACAROON_PATH: "/lnd/data/chain/bitcoin/$BITCOIN_NETWORK"
       REDIS_HOST: redis
 
   frontend:
