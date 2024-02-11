@@ -14,9 +14,10 @@ services:
       REDIS_HOST: redis
 
   frontend:
-    build:
-      context: ./../saifa-fe
-      dockerfile: Dockerfile
+    image: patranakamo/saifa-fe:v1.0.0
+#    build:
+#      context: ./../saifa-fe
+#      dockerfile: Dockerfile
     container_name: saifa-fe-prod
     ports:
       - "9989:80"
