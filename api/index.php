@@ -11,6 +11,7 @@ use Api\V1\Config\RetryConfig;
 use Api\V1\Config\AccessToken;
 use Api\V1\Users\UserHandler as User;
 use Api\V1\Config\ShopConfig;
+use Api\V1\Invoice\Invoice;
 
 $requestUri = $_SERVER['REQUEST_URI'];
 $method = $_SERVER['REQUEST_METHOD'];
@@ -115,6 +116,26 @@ $routes = [
         'handler' => [new ShopConfig(), 'save'],
         'auth_required' => true,
         'method' => 'post'
+    ],
+    '/v1/invoice/new' => [
+        'handler' => [new Invoice(), 'new'],
+        'auth_required' => true,
+        'method' => 'post'
+    ],
+    '/v1/invoices' => [
+        'handler' => [new Invoice(), 'getAll'],
+        'auth_required' => true,
+        'method' => 'get'
+    ],
+    '/v1/invoice/cancel' => [
+        'handler' => [new Invoice(), 'cancel'],
+        'auth_required' => true,
+        'method' => 'post'
+    ],
+    '/v1/invoice/${callId}' => [
+        'handler' => [new Invoice(), 'getOne'],
+        'auth_required' => true,
+        'method' => 'get'
     ],
 ];
 
