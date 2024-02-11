@@ -11,6 +11,8 @@ RUN apt-get update && apt-get install -y \
     && pecl install redis \
     && docker-php-ext-enable redis
 
+RUN apt-get install -y vim-common
+
 # Install Composer globally
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
@@ -37,8 +39,10 @@ RUN a2enmod rewrite
 # Define the volume that maps your local project directory to the container
 VOLUME /var/www/html
 
-COPY init-script.sh /usr/local/bin/init-script.sh
-RUN chmod +x /usr/local/bin/init-script.sh
+COPY ./script/init-script.sh /usr/local/bin/init-script.sh
+COPY ./script/setup-env.sh /usr/local/bin/setup-env.sh
+COPY ./script/setup-migration.sh /usr/local/bin/setup-migration.sh
+RUN chmod +x /usr/local/bin/init-script.sh /usr/local/bin/setup-env.sh /usr/local/bin/setup-migration.sh
 ENTRYPOINT ["init-script.sh"]
 
 RUN a2enmod headers

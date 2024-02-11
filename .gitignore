@@ -3,3 +3,4 @@
 .idea
 /migration/migration.csv
 /lnd/data
+/backup
