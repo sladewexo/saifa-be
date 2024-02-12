@@ -2,19 +2,21 @@
 
 namespace Api\V1\Config;
 
-use API\V1\BaseAPI;
+use Api\V1\BaseAPI;
 use Includes\Database\Config;
 
-class WebhookConfig extends BaseAPI
+class ShopConfig extends BaseAPI
 {
     public function save($data)
     {
         try {
             if (!$this->validation($data)) {
-                $this->returnData(400, ['message' => 'Your request is not in the correct format. need to add http:// in url format too ']);
+                $this->returnData(400, ['message' => 'Your request is not in the correct format.']);
                 return;
             }
             $model = new Config();
+            $data['arrayStop'] = json_encode($data['arrayStop'],true);
+
             if (!$model->saveAppConfig($data)) {
                 throw new \Exception('unable to save app config');
             }
@@ -55,8 +57,7 @@ class WebhookConfig extends BaseAPI
      */
     private function validation(array $data): bool
     {
-//        $requiredKeys = ['web_hook_url_start', 'web_hook_url_end', 'web_hook_url_newaction'];
-        $requiredKeys = ['web_hook_url_update_invoice'];
+        $requiredKeys = ['arrayStop'];
         $keysPresent = [];
         foreach ($requiredKeys as $key) {
             if (!empty($data[$key])) {
@@ -66,12 +67,6 @@ class WebhookConfig extends BaseAPI
         if (empty($keysPresent)) {
             return false;
         }
-
-        foreach ($data as $input) {
-            if (is_string($input) && ($input !== null) && (strpos($input, 'http://') === 0 || strpos($input, 'https://') === 0)) {
-                return true;
-            }
-        }
-        return false;
+        return true;
     }
 }

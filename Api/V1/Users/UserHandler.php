@@ -2,7 +2,7 @@
 
 namespace Api\V1\Users;
 
-use API\V1\BaseAPI;
+use Api\V1\BaseAPI;
 use Includes\Database\Users;
 use Includes\Database\UsersLog;
 

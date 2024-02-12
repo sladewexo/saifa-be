@@ -5,8 +5,8 @@ namespace Api\Auth;
 use Includes\Database\Session;
 use Includes\Database\Users;
 use Includes\Database\UsersLog;
-use Includes\http\returnData;
-use Includes\http\getRequestInfo;
+use Includes\Http\returnData;
+use Includes\Http\getRequestInfo;
 
 class Login
 {

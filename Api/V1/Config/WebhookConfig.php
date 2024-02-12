@@ -2,10 +2,10 @@
 
 namespace Api\V1\Config;
 
-use API\V1\BaseAPI;
+use Api\V1\BaseAPI;
 use Includes\Database\Config;
 
-class RetryConfig extends BaseAPI
+class WebhookConfig extends BaseAPI
 {
     public function save($data)
     {
@@ -15,7 +15,6 @@ class RetryConfig extends BaseAPI
                 return;
             }
             $model = new Config();
-            $data['arrayRetry'] = json_encode($data['arrayRetry'],true);
             if (!$model->saveAppConfig($data)) {
                 throw new \Exception('unable to save app config');
             }
@@ -31,6 +30,23 @@ class RetryConfig extends BaseAPI
         }
     }
 
+    public function get()
+    {
+        try {
+            $model = new Config();
+            $config = $model->getConfigAll();
+            $return['config_data'] = $config;
+            $this->returnData(200, $return);
+        } catch (\Exception $e) {
+            $error = [
+                'status' => 'ERROR',
+                'message' => 'Unable to read config.',
+                'error_details' => $e->getMessage()
+            ];
+            $this->returnData(500, $error);
+        }
+    }
+
     /**
      * Validates the input data.
      *
@@ -39,15 +55,23 @@ class RetryConfig extends BaseAPI
      */
     private function validation(array $data): bool
     {
-        $requiredKeys = ['numRetry', 'arrayRetry', 'status'];
+//        $requiredKeys = ['web_hook_url_start', 'web_hook_url_end', 'web_hook_url_newaction'];
+        $requiredKeys = ['web_hook_url_update_invoice'];
         $keysPresent = [];
         foreach ($requiredKeys as $key) {
-            if (empty($data[$key])) {
-                return false;
+            if (!empty($data[$key])) {
+                $keysPresent[] = $key;
             }
         }
         if (empty($keysPresent)) {
-            return true;
+            return false;
         }
+
+        foreach ($data as $input) {
+            if (is_string($input) && ($input !== null) && (strpos($input, 'http://') === 0 || strpos($input, 'https://') === 0)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

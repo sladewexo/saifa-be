@@ -2,7 +2,7 @@
 
 namespace Api\V1\Invoice;
 
-use API\V1\BaseAPI;
+use Api\V1\BaseAPI;
 use Includes\Database\Invoice as InvoiceModel;
 
 use Includes\Http\getRequestInfo;

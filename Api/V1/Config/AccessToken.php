@@ -2,7 +2,7 @@
 
 namespace Api\V1\Config;
 
-use API\V1\BaseAPI;
+use Api\V1\BaseAPI;
 use Includes\Database\AccessToken as tokenModel;
 use Includes\Database\AccessTokenLog as tokenLogModel;
 
