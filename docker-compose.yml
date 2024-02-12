@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   backend:
+#    image: patranakamo/saifa-be:v1.0.0
     build: .
     container_name: saifa-be-prod
     ports:
@@ -14,7 +15,7 @@ services:
     environment:
       APP_PASSWORD: $APP_PASSWORD
       LN_SERVER_URL: "https://$LND_IP:$LND_REST_PORT"
-      MACAROON_PATH: "/lnd/data/chain/bitcoin/$BITCOIN_NETWORK"
+      BITCOIN_NETWORK: $APP_BITCOIN_NETWORK
       REDIS_HOST: redis
 
   frontend:

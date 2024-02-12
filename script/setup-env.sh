@@ -18,18 +18,18 @@ echo ".env file is ready."
 
 
 # step 2 read macaroon and make it to hex and set app password
-if [ -z "$" ] || [ ${#$MACAROON_PATH} -lt 1 ]; then
-    MACAROON_PATH_IN="/var/www/html/$MACAROON_PATH/admin.macaroon"
+if [ -z "$BITCOIN_NETWORK" ]; then
+    export BITCOIN_NETWORK="testnet"
 else
-    MACAROON_PATH_IN="/var/www/html/lnd/data/chain/bitcoin/testnet/admin.macaroon"
+    echo "BITCOIN_NETWORK is already set to '$BITCOIN_NETWORK'."
 fi
-#echo "MACAROON_PATH  is ->>>>> $MACAROON_PATH"
-MACAROON_PATH_IN="/var/www/html$MACAROON_PATH/admin.macaroon"
-if not [ -f "$MACAROON_PATH_IN" ]; then
-    echo "MACAROON_PATH not found ! $MACAROON_PATH_IN ."
-    exit 1
+
+MACAROON_PATH="/lnd/data/chain/bitcoin/$BITCOIN_NETWORK"
+MACAROON_PATH_FULL="/var/www/html$MACAROON_PATH/admin.macaroon"
+if [ ! -f "$MACAROON_PATH_FULL" ]; then
+    echo "File MACAROON_PATH_FULL  $MACAROON_PATH_FULL does not exist."
 fi
-NEW_MACAROON_VALUE=$(xxd -p -c9999 "$MACAROON_PATH_IN") # Encode the LND macaroon to hex
+NEW_MACAROON_VALUE=$(xxd -p -c9999 "$MACAROON_PATH_FULL") # Encode the LND macaroon to hex
 #echo "NEW_MACAROON_VALUE  is is is ->>>>> $NEW_MACAROON_VALUE"
 
 

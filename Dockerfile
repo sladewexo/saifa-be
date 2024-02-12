@@ -6,12 +6,11 @@ RUN apt-get update && apt-get install -y \
         unzip \
         && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y \
-        libssl-dev \
-    && pecl install redis \
-    && docker-php-ext-enable redis
-
+RUN apt-get update && apt-get install -y libssl-dev
+RUN pecl install redis
+RUN docker-php-ext-enable redis
 RUN apt-get install -y vim-common
+RUN rm -rf /var/lib/apt/lists/*
 
 # Install Composer globally
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
