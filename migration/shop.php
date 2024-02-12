@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once '../includes/autoload.php';
+require_once '../Includes/autoload.php';
 require_once './migration.php';
 
 use Includes\Database\Config;
