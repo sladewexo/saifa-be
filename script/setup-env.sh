@@ -37,6 +37,10 @@ NEW_MACAROON_VALUE=$(xxd -p -c9999 "$MACAROON_PATH_FULL") # Encode the LND macar
 if [ -f "$ENV_FILE" ]; then
     awk -v newvalue="$NEW_MACAROON_VALUE" 'BEGIN{FS=OFS="="} $1=="LND_MARCAROON" {$2=newvalue} 1' "$ENV_FILE" > tmpfile && mv tmpfile "$ENV_FILE"
     echo "LND_MACAROON updated in .env file."
+    if [ -z "$LN_SERVER_URL" ]; then
+      awk -v newvalue="$LN_SERVER_URL" 'BEGIN{FS=OFS="="} $1=="LND_HOST" {$2=newvalue} 1' "$ENV_FILE" > tmpfile && mv tmpfile "$ENV_FILE"
+      echo "LND_HOST updated in .env file."
+    fi
 else
     echo ".env file does not exist."
 fi

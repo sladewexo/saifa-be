@@ -6,11 +6,19 @@ RUN apt-get update && apt-get install -y \
         unzip \
         && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y libssl-dev
+RUN apt-get update && apt-get install -y libssl-dev cron
 RUN pecl install redis
 RUN docker-php-ext-enable redis
 RUN apt-get install -y vim-common
 RUN rm -rf /var/lib/apt/lists/*
+
+# Create a directory for your app's logs and adjust permissions
+RUN mkdir -p /var/log/saifa-log && \
+    chown root:www-data /var/log/saifa-log && \
+    chmod 775 /var/log/saifa-log
+
+ADD ./script/cronjob-setup /etc/cron.d/saifacron
+RUN chmod 0644 /etc/cron.d/saifacron && crontab /etc/cron.d/saifacron
 
 # Install Composer globally
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
@@ -46,4 +54,7 @@ ENTRYPOINT ["init-script.sh"]
 
 RUN a2enmod headers
 
-CMD ["apache2-foreground"]
+COPY ./script/start.sh /start.sh
+RUN chmod +x /start.sh
+CMD ["/start.sh"]
+
