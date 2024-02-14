@@ -13,7 +13,7 @@ if (checkRunMigration($migrationVersion)) {
 
 $data = [
     'numShop' => 1,
-    'array_shop' => json_encode(['first shop'], true)
+    'arrayStop' => json_encode(['Default Shop Name'], true)
 ];
 
 $model = new Config();

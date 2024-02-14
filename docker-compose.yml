@@ -8,7 +8,7 @@ services:
     ports:
       - "9988:80"
     volumes:
-      - .:/var/www/html
+      - .:/var/www/html #for used this volume code will update readl time but is will not check case-sensitive like linux on mac so need to be careful
       - ./lnd/data:/var/www/html/lnd/data:ro
     depends_on:
       - redis
