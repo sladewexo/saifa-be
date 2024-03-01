@@ -7,6 +7,7 @@ class Invoice extends BaseModel
     const TABLE_NAME = "invoice";
     const SORT_KEY = "invoice_sort";
     const SORT_KEY_ACTIVE_ONLY = "invoice_sort_active";
+    const SORT_KEY_SUCCESS_INVOICE = "invoice_sort_success";
     const INDEX_KEY = "invoice_rhash_index";
 
     /**
@@ -64,9 +65,19 @@ class Invoice extends BaseModel
         return $this->select(self::TABLE_NAME, $uuid);
     }
 
-    public function countInvoice(): int
+    public function countInvoiceTotal(): int
     {
         return $this->redis->zCount(self::SORT_KEY, '-inf', 'inf');
+    }
+
+    public function countInvoiceActive(): int
+    {
+        return $this->redis->zCount(self::SORT_KEY_ACTIVE_ONLY, '-inf', 'inf');
+    }
+
+    public function countInvoiceSuccess(): int
+    {
+        return $this->redis->zCount(self::SORT_KEY_SUCCESS_INVOICE, '-inf', 'inf');
     }
 
     /**
@@ -111,11 +122,27 @@ class Invoice extends BaseModel
 
     public function updateInvoiceStatus(string $uuid, string $status): bool
     {
+        //debug
+//        $random = rand(0,1);
+//        if($status == 'CANCELED' && $random == 0){
+//            $status = 'SETTLED';
+//        }
+
+        $nonActiveStatus = ['SETTLED', 'CANCELED', 'ACCEPTED'];
+        if (in_array($status, $nonActiveStatus)) {
+            $this->softDelete(self::TABLE_NAME, self::SORT_KEY_ACTIVE_ONLY, $uuid);
+            if ($status != 'CANCELED') {
+                $this->addOrUpdateSort(self::TABLE_NAME, self::SORT_KEY_SUCCESS_INVOICE, $uuid, time());
+            }
+        }
         return $this->update(self::TABLE_NAME, $uuid, ['status' => $status]);
     }
 
     public function updateInvoice(string $uuid, array $dataUpdate): bool
     {
+        if (isset($dataUpdate['is_manual_cancel']) && $dataUpdate['is_manual_cancel']) {
+            $this->softDelete(self::TABLE_NAME, self::SORT_KEY_ACTIVE_ONLY, $uuid);
+        }
         return $this->update(self::TABLE_NAME, $uuid, $dataUpdate);
     }
 

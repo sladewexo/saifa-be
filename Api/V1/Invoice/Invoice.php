@@ -89,9 +89,16 @@ class Invoice extends BaseAPI
             $invoiceData = $model->getInvoiceAll($maxPerPage, $page, $mode);
             $count = count($invoiceData);
             if (empty($readParam['search'])) {
-                $count = $model->countInvoice();
+                $count = $model->countInvoiceTotal();
+                $activeCount = $model->countInvoiceActive();
+                $successCount = $model->countInvoiceSuccess();
             }
-            $this->returnData(200, ['count' => $count, 'invoices' => $invoiceData]);
+            $this->returnData(200, [
+                'count' => $count,
+                'active_count' => $activeCount,
+                'success_count' => $successCount,
+                'invoices' => $invoiceData
+            ]);
         } catch (\Exception $e) {
             $error = [
                 'status' => 'ERROR',

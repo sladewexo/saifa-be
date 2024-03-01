@@ -15,8 +15,8 @@ class CheckInvoiceStatusCron
         $activeInvoice = $invoiceModel->getActiveInvoice(100, 1, 'desc');
         foreach ($activeInvoice as $row) {
             if (!empty($row['r_hash'] && $invoiceModel->isUUID($row['invoice_id']))) {
-                [$statusChnage, $statusName] = $this->checkWithoutWaitInvoiceStatus($row);
-                if ($statusChnage) {
+                [$statusChange, $statusName] = $this->checkWithoutWaitInvoiceStatus($row);
+                if ($statusChange) {
                     if (!$invoiceModel->updateInvoiceStatus($row['invoice_id'], $statusName)) {
                         echo 'unable to updateInvoiceStatus ' . $row['invoice_id'];
                     }
@@ -57,7 +57,7 @@ class CheckInvoiceStatusCron
             if ($statusCode == 200) {
                 // Check the invoice status
                 if (isset($invoiceDetails['state'])) {
-                    var_dump($invoiceDetails);
+//                    var_dump($invoiceDetails);
                     $nonActiveStatus = ['SETTLED', 'CANCELED', 'ACCEPTED'];
                     if (in_array($invoiceDetails['state'], $nonActiveStatus)) {
                         return [true, $invoiceDetails['state']];
