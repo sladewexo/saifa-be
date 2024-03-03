@@ -88,7 +88,6 @@ class InvoiceService
             }
             return false;
         }
-        return false;
     }
 
     /**

@@ -7,6 +7,7 @@ use Includes\Database\Invoice as InvoiceModel;
 
 use Includes\Http\getRequestInfo;
 use Services\LND\InvoiceService;
+use Services\Webhook\UpdateInvoiceStatus as WebHookService;
 
 class Invoice extends BaseAPI
 {
@@ -148,6 +149,9 @@ class Invoice extends BaseAPI
             if (!$model->updateInvoice($invoiceId, $updateData)) {
                 throw new \Exception('unable to cancel Invoice issue from redis');
             }
+            $lastCancelInvoice = $model->getInvoice($invoiceId);
+            $webhookService = new WebHookService();
+            $webhookService->sendHook('', 'invoice_status', $lastCancelInvoice);
 
             $this->returnData(200, ['message' => 'invoice have been cancel successfully']);
 

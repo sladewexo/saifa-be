@@ -14,15 +14,31 @@ class UpdateInvoiceStatus extends BaseHook
      * @return bool
      * @throws \Exception
      */
-    public function sendHook(string $url, string $eventName, array $data): bool
+    public function sendHook(string $url = '', string $eventName, array $data): bool
     {
-        if (empty($url) && empty($data)) {
+        if (empty($data)) {
             throw new \Exception('unable to send webhook no url data or send data');
         }
+        $config = new Config;
 
-        $result = $this->sendDataToWebhook($url, $data);
+        if (empty($url)) {
+            $url = $config->getConfig("web_hook_url_update_invoice");
+        }
+
+        $header = [];
+        $authOption = $config->getConfig("auth_option") ?? '';
+        if ($authOption == 'customized') {
+            $headerKey = $config->getConfig("header_key") ?? '';
+            $customizedApiKey = $config->getConfig("customized_api_key") ?? '';
+            $header[$headerKey] = $customizedApiKey;
+        } else if ($authOption == 'bearer') {
+            $bearer = $config->getConfig("bearer") ?? '';
+            $header['Authorization'] = 'Bearer ' . $bearer;
+        }
+
+        $result = $this->sendDataToWebhook($url, $data, $header);
         $logModel = new WebHookLogsStorage();
-        [$insert, $uuid] = $logModel->insertNewLogs($result, $eventName,'', $data);
+        [$insert, $uuid] = $logModel->insertNewLogs($result, $eventName, '', $data);
         if (!$insert) {
             throw new \Exception('unable to save log webhook');
         }
