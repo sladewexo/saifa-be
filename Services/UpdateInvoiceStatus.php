@@ -22,14 +22,17 @@ class UpdateInvoiceStatus extends BaseHook
 
         $result = $this->sendDataToWebhook($url, $data);
         $logModel = new WebHookLogsStorage();
-
         [$insert, $uuid] = $logModel->insertNewLogs($result, $eventName,'', $data);
-
+        if (!$insert) {
+            throw new \Exception('unable to save log webhook');
+        }
+        $logModel->updateCountSendEvent();
         if (!$result) {
             $config = new Config();
             $arrayRetry = $config->getRetryArray();
             $now = time();
             $timeAddForThisTime = (int)$arrayRetry[0];
+            $logModel->updateCountSendEvent(true);
             $tenMinutesLater = (int)strtotime("+" . $timeAddForThisTime . " minutes", $now); // Add 10 minutes
             if ($logModel->addNewSort($uuid, $tenMinutesLater)) {
                 $webHookData = $logModel->getWebHookLog($uuid);

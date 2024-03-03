@@ -7,6 +7,9 @@ class WebHookLogsStorage extends BaseModel
     const table_name = "_webhook_log";
     const table_name_cut_first = "webhook_log";
     const sorted_fail_key = self::table_name_cut_first . '_sorted_by_fail_time';
+    //count key
+    const COUNT_KEY = "webhook_log_all_count";
+    const COUNT_KEY_FAIL = "webhook_log_fail_count";
 
     /**
      * @param bool $status
@@ -32,6 +35,26 @@ class WebHookLogsStorage extends BaseModel
         $logDataSave['retry_time'] = json_encode([time()], true);
         $insert = $this->insertNewRow($eventName . self::table_name, $uuid, $logDataSave);
         return [$insert, $eventName . self::table_name . ":" . $uuid];
+    }
+
+    /**
+     * @param bool $fail
+     * @return bool|\Redis
+     */
+    public function updateCountSendEvent(bool $fail = false)
+    {
+        $keyCount = self::COUNT_KEY;
+        if ($fail) $keyCount = self::COUNT_KEY_FAIL;
+        $count = (empty($this->redis->get($keyCount))) ? 0 : $this->redis->get($keyCount);
+        $count++;
+        return $this->redis->set($keyCount, $count);
+    }
+
+    public function getCount(): array
+    {
+        $count = (empty($this->redis->get(self::COUNT_KEY))) ? 0 : $this->redis->get(self::COUNT_KEY);
+        $countFail = (empty($this->redis->get(self::COUNT_KEY_FAIL))) ? 0 : $this->redis->get(self::COUNT_KEY_FAIL);
+        return ['all_send' => (int)$count, 'fail_send' => (int)$countFail];
     }
 
     /**

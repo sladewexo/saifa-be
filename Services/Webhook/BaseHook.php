@@ -68,9 +68,7 @@ class BaseHook
 
         if ($httpCode >= 200 && $httpCode < 300) {
             return true;
-        } else {
-            //todo add to retry webhook q
-            return false;
         }
+        return false;
     }
 }

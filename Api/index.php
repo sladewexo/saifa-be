@@ -12,6 +12,7 @@ use Api\V1\Config\AccessToken;
 use Api\V1\Users\UserHandler as User;
 use Api\V1\Config\ShopConfig;
 use Api\V1\Invoice\Invoice;
+use Api\V1\Dashboard\Dashboard;
 
 $requestUri = $_SERVER['REQUEST_URI'];
 $method = $_SERVER['REQUEST_METHOD'];
@@ -134,6 +135,11 @@ $routes = [
     ],
     '/v1/invoice/${callId}' => [
         'handler' => [new Invoice(), 'getOne'],
+        'auth_required' => true,
+        'method' => 'get'
+    ],
+    '/v1/dashboard' => [
+        'handler' => [new Dashboard(), 'getOne'],
         'auth_required' => true,
         'method' => 'get'
     ],
