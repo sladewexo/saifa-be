@@ -33,8 +33,9 @@ class InvoiceService
     public function runCheckingInvoiceRealTime(string $invoiceRHash): bool
     {
         try {
-            $fullCommandPHP = '/usr/local/opt/php@7.4/bin/php';
-            $command = "cd ../services && $fullCommandPHP LNDConnection.php " . $invoiceRHash . " > /dev/null 2>&1 &";
+//            $fullCommandPHP = '/usr/local/opt/php@7.4/bin/php';
+            $fullCommandPHP = 'php';
+            $command = "cd ../Services && $fullCommandPHP LNDConnection.php " . $invoiceRHash . " > /dev/null 2>&1 &";
             //shell_exec($command);
 
             $descriptorspec = array(

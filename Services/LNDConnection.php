@@ -8,7 +8,6 @@ require_once __DIR__ . '/../includes/autoload.php';
 use Dotenv\Dotenv;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Includes\Database\Config;
 use Services\Webhook\UpdateInvoiceStatus as WebHookService;
 use Includes\Database\Invoice as InvoiceModel;
 
@@ -73,10 +72,8 @@ class LNDConnection
                     if ($this->debugMode) file_put_contents('debug.log', 'done save status ' . $invoiceData['invoice_id'] . PHP_EOL, FILE_APPEND);
                 }
                 $lastUpdateInvoice = $model->getInvoice($invoiceData['invoice_id']);
-                $config = new Config;
-                $urlWebhook = $config->getConfig("web_hook_url_update_invoice");
                 $webhookService = new WebHookService();
-                $webhookService->sendHook($urlWebhook, 'invoice_status', $lastUpdateInvoice);
+                $webhookService->sendHook('', 'invoice_status', $lastUpdateInvoice);
             } else {
                 throw new \Exception('unable to found invoice id from hash ' . $invoiceRHash);
             }
@@ -99,7 +96,7 @@ if ($argc > 1) {
     die();
 }
 
-$hostname = $_ENV['LND_HOST'];;
+$hostname = $_ENV['LND_HOST'];
 $macaroon = $_ENV['LND_MARCAROON'];
 $debugMode = $_ENV['DEBUG_MODE'] ?? false;
 
