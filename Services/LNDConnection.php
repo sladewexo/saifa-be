@@ -16,6 +16,11 @@ class LNDConnection
 {
     private $hostname, $macaroon, $debugMode;
 
+    /**
+     * @param $hostname
+     * @param $macaroon
+     * @param $debugMode
+     */
     public function __construct($hostname, $macaroon, $debugMode = false)
     {
         $this->hostname = $hostname;
@@ -59,12 +64,7 @@ class LNDConnection
                 $lastResultArray = json_decode($lastResult, true);
             }
             if ($this->debugMode) file_put_contents('debug.log', 'hash:' . $lastResultArray['result']['r_hash'] . ',state:' . $lastResultArray['result']['state'] . PHP_EOL, FILE_APPEND);
-
-            $config = new Config;
-            $urlWebhook = $config->getConfig("web_hook_url_update_invoice");
-
-            $webhookService = new WebHookService();
-            $webhookService->sendHook($urlWebhook, 'invoice_status', $lastResultArray);
+            //todo save $lastResultArray (internal system log) in log not the send to hook for make hook api get same format.
 
             $model = new InvoiceModel();
             $invoiceData = $model->getInvoiceFromRHash($invoiceRHash);
@@ -72,6 +72,11 @@ class LNDConnection
                 if ($model->updateInvoiceStatus($invoiceData['invoice_id'], $lastResultArray['result']['state'])) {
                     if ($this->debugMode) file_put_contents('debug.log', 'done save status ' . $invoiceData['invoice_id'] . PHP_EOL, FILE_APPEND);
                 }
+                $lastUpdateInvoice = $model->getInvoice($invoiceData['invoice_id']);
+                $config = new Config;
+                $urlWebhook = $config->getConfig("web_hook_url_update_invoice");
+                $webhookService = new WebHookService();
+                $webhookService->sendHook($urlWebhook, 'invoice_status', $lastUpdateInvoice);
             } else {
                 throw new \Exception('unable to found invoice id from hash ' . $invoiceRHash);
             }

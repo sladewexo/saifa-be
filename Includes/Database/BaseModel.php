@@ -401,10 +401,20 @@ class BaseModel
         }
     }
 
+    /**
+     * @param string $tableName
+     * @param string $sortName
+     * @param string $uuid
+     * @return bool
+     */
     protected function softDelete (string $tableName, string $sortName, string $uuid): bool
     {
         $memberKey = $tableName . ":" . $uuid;
-        return $this->redis->zRem($sortName, $memberKey);;
+        $removedCount = $this->redis->zRem($sortName, $memberKey);
+        if ($removedCount > 0) {
+            return true;
+        }
+        return false;
     }
 
     public function getLogFromID(string $sortKey,string $uuid): array

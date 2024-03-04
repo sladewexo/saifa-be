@@ -52,10 +52,11 @@ class Config extends BaseModel
         try {
             $arrayRetry = json_decode($arrayRetryStr, true);
             if (json_last_error() !== JSON_ERROR_NONE || !is_array($arrayRetry)) {
-                throw new \Exception("JSON decode error: " . json_last_error_msg());
+//                throw new \Exception("JSON decode error: " . json_last_error_msg());
+                return [];
             }
         } catch (\Exception $e) {
-            echo $e->getMessage();
+//            echo $e->getMessage();
             $arrayRetry = self::default_retry_time;
         }
         return $arrayRetry;

@@ -6,6 +6,7 @@ use Dotenv\Dotenv;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Includes\Database\Invoice as InvoiceModel;
+use Services\Webhook\UpdateInvoiceStatus as WebHookService;
 
 class CheckInvoiceStatusCron
 {
@@ -20,15 +21,22 @@ class CheckInvoiceStatusCron
                     if (!$invoiceModel->updateInvoiceStatus($row['invoice_id'], $statusName)) {
                         echo 'unable to updateInvoiceStatus ' . $row['invoice_id'];
                     }
-                    if (!$invoiceModel->removeActiveInvoice($row['invoice_id'])) {
-                        echo 'unable to removeActiveInvoice ' . $row['invoice_id'];
-                    }
+
+                    //call hook
+                    $lastUpdateInvoice = $invoiceModel->getInvoice($row['invoice_id']);
+                    $webhookService = new WebHookService();
+                    $webhookService->sendHook('', 'invoice_status', $lastUpdateInvoice);
                 }
             }
         }
         return true;
     }
 
+    /**
+     * @param array $invoiceData
+     * @return array
+     * @throws GuzzleException
+     */
     private function checkWithoutWaitInvoiceStatus(array $invoiceData): array
     {
         $dotenv = Dotenv::createImmutable('./../');

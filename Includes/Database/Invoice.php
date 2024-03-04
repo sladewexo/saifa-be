@@ -55,7 +55,7 @@ class Invoice extends BaseModel
         return $results;
     }
 
-    public function removeActiveInvoice(string $invoiceId): bool
+    private function removeActiveInvoice(string $invoiceId): bool
     {
         return $this->softDelete(self::TABLE_NAME, self::SORT_KEY_ACTIVE_ONLY, $invoiceId);
     }
@@ -130,7 +130,7 @@ class Invoice extends BaseModel
 
         $nonActiveStatus = ['SETTLED', 'CANCELED', 'ACCEPTED'];
         if (in_array($status, $nonActiveStatus)) {
-            $this->softDelete(self::TABLE_NAME, self::SORT_KEY_ACTIVE_ONLY, $uuid);
+            $this->removeActiveInvoice($uuid);
             if ($status != 'CANCELED') {
                 $this->addOrUpdateSort(self::TABLE_NAME, self::SORT_KEY_SUCCESS_INVOICE, $uuid, time());
             }

@@ -13,6 +13,11 @@ class UpdateInvoiceStatus extends BaseHook
      * @param array $data
      * @return bool
      * @throws \Exception
+     *
+     * now this webhook have been call with 3 possible way
+     * 1 manual cancel on UI
+     * 2 auto cancel by every 5min cron
+     * 3 auto cancel by sync process real time update process.
      */
     public function sendHook(string $url = '', string $eventName, array $data): bool
     {
