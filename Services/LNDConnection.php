@@ -45,8 +45,8 @@ class LNDConnection
              * If the r_hash contains a /, it will cause an error when using the GET method to check the invoice.
              * To prevent this, change the / in the r_hash string to _. This modification won't alter the meaning of the Base64 encoded data."
              */
+            $this->logDebug('debug', 'before call ' . $invoiceRHashSafe . 'will wait ' . $timeOut );
 
-            if ($this->debugMode) file_put_contents('debug.log', 'before call ' . $invoiceRHashSafe . 'will wait ' . $timeOut . PHP_EOL, FILE_APPEND);
             $response = $client->request('GET', "/v2/invoices/subscribe/$invoiceRHashSafe");
             $body = $response->getBody();
             $lines = '';
@@ -62,14 +62,16 @@ class LNDConnection
                 $lastResult = end($resultAll);
                 $lastResultArray = json_decode($lastResult, true);
             }
-            if ($this->debugMode) file_put_contents('debug.log', 'hash:' . $lastResultArray['result']['r_hash'] . ',state:' . $lastResultArray['result']['state'] . PHP_EOL, FILE_APPEND);
-            //todo save $lastResultArray (internal system log) in log not the send to hook for make hook api get same format.
+            $this->logDebug('debug', 'hash:' . $lastResultArray['result']['r_hash'] . ',state:' . $lastResultArray['result']['state']);
 
             $model = new InvoiceModel();
             $invoiceData = $model->getInvoiceFromRHash($invoiceRHash);
             if (!empty($invoiceData['invoice_id'])) {
+                $this->logDebug('debug', 'state:' . $lastResultArray['result']['state'] . $invoiceData['invoice_id']);
                 if ($model->updateInvoiceStatus($invoiceData['invoice_id'], $lastResultArray['result']['state'])) {
-                    if ($this->debugMode) file_put_contents('debug.log', 'done save status ' . $invoiceData['invoice_id'] . PHP_EOL, FILE_APPEND);
+                    $this->logDebug('debug', 'done save status ' . $invoiceData['invoice_id']);
+                } else {
+                    $this->logDebug('debug', 'update invoice status not work ');
                 }
                 $lastUpdateInvoice = $model->getInvoice($invoiceData['invoice_id']);
                 $webhookService = new WebHookService();
@@ -78,11 +80,27 @@ class LNDConnection
                 throw new \Exception('unable to found invoice id from hash ' . $invoiceRHash);
             }
 
-
         } catch (GuzzleException $e) {
-            file_put_contents('error.log', print_r($e->getMessage(), true), FILE_APPEND);
+            $this->logDebug('error', print_r($e->getMessage(), true));
             echo "Error: " . $e->getMessage() . "\n";
         }
+    }
+
+    /**
+     * @param string $mode
+     * @param string $textLog
+     * @return void
+     */
+    private function logDebug(string $mode = 'debug', string $textLog = '')
+    {
+        if ($mode == 'debug' && !$this->debugMode) return;
+        $logFile = 'error.log';
+        if ($mode == 'debug') $logFile = 'debug.log';
+        if (!file_exists($logFile) || !is_writable($logFile)) {
+            @touch($logFile);
+            @chmod($logFile, 0666);
+        }
+        file_put_contents($logFile, $textLog . PHP_EOL, FILE_APPEND);
     }
 }
 
