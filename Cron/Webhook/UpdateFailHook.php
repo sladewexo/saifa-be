@@ -1,6 +1,6 @@
 <?php
 
-namespace Cron\WebHook;
+namespace Cron\Webhook;
 
 use Includes\Database\CallEventStorage;
 use Includes\Database\Config;

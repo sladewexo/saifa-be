@@ -1,5 +1,5 @@
 # run main check cron of this system every 5 mins.
-*/5 * * * * cd /var/www/html/cron && ./cronscript.sh >> /var/log/saifa-log/cron_$(date +\%Y_\%m_\%d).log 2>&1
+*/5 * * * * cd /var/www/html/Cron && ./cronscript.sh >> /var/log/saifa-log/cron_$(date +\%Y_\%m_\%d).log 2>&1
 
 # remove cron log file evey day but only file that older then 10 days will be remove.
 0 1 * * * find /var/log/saifa-log/ -name 'cron_*.log' -type f -mtime +10 -exec rm {} \;
