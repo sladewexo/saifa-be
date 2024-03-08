@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once  __DIR__ .'../Includes/autoload.php';
+require_once   '../Includes/autoload.php';
 
 use Cron\Webhook\UpdateFailHook;
 use Cron\Lnd\CheckInvoiceStatusCron;
