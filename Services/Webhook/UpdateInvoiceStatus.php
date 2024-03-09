@@ -30,15 +30,23 @@ class UpdateInvoiceStatus extends BaseHook
             $url = $config->getConfig("web_hook_url_update_invoice");
         }
 
+        if (empty($url)) {
+            return false;
+        }
+
         $header = [];
         $authOption = $config->getConfig("auth_option") ?? '';
         if ($authOption == 'customized') {
             $headerKey = $config->getConfig("header_key") ?? '';
             $customizedApiKey = $config->getConfig("customized_api_key") ?? '';
-            $header[$headerKey] = $customizedApiKey;
+            if(!empty($headerKey)) {
+                $header[$headerKey] = $customizedApiKey;
+            }
         } else if ($authOption == 'bearer') {
             $bearer = $config->getConfig("bearer") ?? '';
-            $header['Authorization'] = 'Bearer ' . $bearer;
+            if(!empty($bearer)) {
+                $header['Authorization'] = 'Bearer ' . $bearer;
+            }
         }
 
         $result = $this->sendDataToWebhook($url, $data, $header);

@@ -53,7 +53,7 @@ class BaseHook
      * @param array $header
      * @return bool
      */
-    protected function sendDataToWebhook(string $url, array $data,array $header = [] )
+    protected function sendDataToWebhook(string $url, array $data,array $header = [] ):bool
     {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

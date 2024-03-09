@@ -16,6 +16,7 @@ class Config extends BaseModel
         if (empty($key))
             return "";
         $config = $this->select(self::APP_CONFIG_TABLE, "");
+        if (empty($config) || empty($config[$key])) return '';
         return $config[$key];
     }
 
