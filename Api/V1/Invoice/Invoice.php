@@ -40,8 +40,8 @@ class Invoice extends BaseAPI
         } catch (\Exception $e) {
             $error = [
                 'status' => 'ERROR',
-                'message' => 'Unable to connect to update config.',
-                'error_details' => $e->getMessage()
+                'message' => 'Unable to connect to add invoice.',
+                'error_details' => $e->getMessage().":".$e->getFile().":".$e->getLine()
             ];
             $this->returnData(500, $error);
         }

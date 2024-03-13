@@ -73,9 +73,15 @@ class LNDConnection
                 } else {
                     $this->logDebug('debug', 'update invoice status not work ');
                 }
-                $lastUpdateInvoice = $model->getInvoice($invoiceData['invoice_id']);
-                $webhookService = new WebHookService();
-                $webhookService->sendHook('', 'invoice_status', $lastUpdateInvoice);
+
+                sleep(2);
+                $invoiceData = $model->getInvoiceFromRHash($invoiceRHash);
+                if(empty($invoiceData['is_manual_cancel']) && !$invoiceData['is_manual_cancel']) {
+                    $lastUpdateInvoice = $model->getInvoice($invoiceData['invoice_id']);
+                    $webhookService = new WebHookService();
+                    $webhookService->sendHook('', 'invoice_status', $lastUpdateInvoice);
+                }
+
             } else {
                 throw new \Exception('unable to found invoice id from hash ' . $invoiceRHash);
             }

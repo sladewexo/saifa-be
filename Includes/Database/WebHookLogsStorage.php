@@ -73,9 +73,10 @@ class WebHookLogsStorage extends BaseModel
     }
 
     /**
+     * @param $debug
      * @return array
      */
-    public function getFailSorted(): array
+    public function getWebHookFailToSendList($debug = false): array
     {
         $sortKey = $this->getSortKey(self::sorted_fail_key, 0, 0, true);
         $eventLogs = [];
@@ -83,7 +84,7 @@ class WebHookLogsStorage extends BaseModel
         //$now = '1671849108';
         foreach ($sortKey as $keyId => $score) {
             if ($score < $now) {
-                echo 'skip ' . $score;
+                if($debug) echo PHP_EOL."skip this key ($keyId) is not time yet : $score ";
                 continue;
             }
             $eventLogs[$keyId] = $this->redis->hGetAll($keyId);
@@ -95,9 +96,27 @@ class WebHookLogsStorage extends BaseModel
      * @param string $key
      * @return bool
      */
-    public function removeSort(string $key): bool
+    public function removeWebHookFailToSendList(string $key): bool
     {
         return $this->redis->zRem(self::sorted_fail_key, $key);
+    }
+
+    /**
+     * @param bool $fail
+     * @return bool|\Redis
+     */
+    public function updateCountAfterRetryNotFail()
+    {
+        $count = (empty($this->redis->get( self::COUNT_KEY))) ? 0 : $this->redis->get(self::COUNT_KEY);
+        $count++;
+        $this->redis->set(self::COUNT_KEY, $count);
+
+        $count = (empty($this->redis->get( self::COUNT_KEY_FAIL))) ? 0 : $this->redis->get(self::COUNT_KEY_FAIL);
+        $count--;
+        if ($count < 1) $count = 0;
+        $this->redis->set(self::COUNT_KEY_FAIL, $count);
+
+        return true;
     }
 
     /**
