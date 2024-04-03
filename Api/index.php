@@ -13,6 +13,7 @@ use Api\V1\Users\UserHandler as User;
 use Api\V1\Config\ShopConfig;
 use Api\V1\Invoice\Invoice;
 use Api\V1\Dashboard\Dashboard;
+use Api\V1\Config\CurrencyRate;
 
 $requestUri = $_SERVER['REQUEST_URI'];
 $method = $_SERVER['REQUEST_METHOD'];
@@ -106,6 +107,11 @@ $routes = [
     '/v1/user/${userId}' => [
         'handler' => [new User(), 'getOne'],
         'auth_required' => true,
+        'method' => 'get'
+    ],
+    '/v1/config/rate' => [
+        'handler' => [new CurrencyRate(), 'get'],
+        'auth_required' => false,
         'method' => 'get'
     ],
     '/v1/config/shops' => [
