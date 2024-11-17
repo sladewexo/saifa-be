@@ -13,7 +13,7 @@ services:
     depends_on:
       - redis
     environment:
-      APP_PASSWORD: $APP_PASSWORD
+      APP_PASSWORD: "password"
       LN_SERVER_URL: "https://$LND_IP:$LND_REST_PORT"
       BITCOIN_NETWORK: $APP_BITCOIN_NETWORK
       REDIS_HOST: redis
